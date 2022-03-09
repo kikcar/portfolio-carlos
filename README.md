@@ -3,6 +3,7 @@
 Welcome to my portfolio, here you'll find all the projects i've been working on. 
 
 Considerations:
+
     - The portfolio is organized in a sequential order. Therefore, it can be seen an evolution both from the coding quality and libraries used, as well as the complexity of the projects. 
     - All libraries used will be published in a requirements.txt file within each section. 
     
