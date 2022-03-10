@@ -109,6 +109,101 @@ These are the first lines of code I have ever typed in R, so please be aware of 
 
 3) vectorized_programming_R_and_Python:
 
+    The objective is to code in the most efficient and vectorized way both in python and R. 
+
+    Here we try to vectorize a solution for two problems:
+     
+    a) Jensen's Alpha ('jensen's_alpha_R' and 'jensen's_alpha_python'): 
+        - We are going to calculate jensen's alpha for each date and each asset from the DAX index. 
+        - We are going to use the data contained in 'DAX.csv' using the BUND data as the risk-free rate. 
+        - We perform basic financial calculations (returns, covariances, and Betas) and apply the jensen's alpha formula. 
+        - The code solves the problem in 0.09 seconds. 
+    
+    b) lottery ('lottery_R' and 'lottery_python'):
+        - The objective is to create a fake lottery with 50k simulations and combinations of 5 numbers between 1 and 50. 
+        - We generate 50k bids to simulate our participation en each simulation. 
+        - We then calculate how many times we 'won' the lottery.
+        - The code solves the problem under 0.73 seconds.
+
+4) Solving the markowitz frontier using 70.000 investment funds:
+
+    The objective of this project is to solve the markowitz frontier with 70k funds and get a code capable of solving it under 24h of execution. We won't be using any AI, ML, nor optimization techniques. 
+
+    Portfolio constraints: 
+        - Each portfolio will contain between 1 and 30 assets.
+
+    We are going to use the data contained in the two .zip files called 'funds_data_1' and 'funds_data_2'.
+
+    a) 'Funciones_marko.py':
+
+        This code is going to be used as a library that we will import on the main code 'Markowitz.ipynb'.
+        It contains the main functions we'll be using to solve the problem. Specifically:
+            1) data preparation:
+                • 'Read_multiple_csv': Since we are going to be using a lot of .csv files to upload the fund data, this function allows the reading of all files within a loop function and saves the data into a list. 
+                • 'dataframe_fondos': This function will loop through the list previously created and convert it into a unique dataframe. 
+                • 'homogeneizar_datos': This function will recieve as input the unique dataframe we get as output from the previous function. The objective will be to homogenize all data in a data-frame that will have as index the unique business dates and the funds' names as columns, and finally, match the NAV of each fund and each date. Finally, once we get the homogenized df, it will make financial sense to eliminate those funds that have less than 85% (also an input) of NAV data. 
+                • 'limpiar_datos': This function will clean our data replacing empty values with NaN. After that, we will use a forward and backward fillna. 
+            2) Markowitz function:
+                • Inputs = Mean daily fund returns, fund returns, and a list of selected assets. 
+                • It will assign random weights to the selected assets and then perform basic portfolio calculations (portfolio returns and variance). 
+                • Finally, it will save the assets, weights, risk, returns, and sharpe-ratio to a dictionary.
+    
+    b) 'Markowitz.ipynb':
+        
+        This notebook will contain the code that solves the markowitz frontier using functions imported from the previous python code just described.
+
+        - First we will establish the path containing our data and we will pass it through the 'read_multiple_csv' function. 
+        - Once we have our data, we pass it as input for the 'dataframe_fondos' function. 
+        - We establish a threshold of minimum % of NAV data to eliminate the assets with less data, and we pass it as input to the 'homogeneizar_datos' and 'limpiar_datos' functions. Now we have our data cleaned and homogenized ready to use for our calculations. 
+        - We then perform basic calculations of returns that we will be using for our markowitz function. 
+        - We will Select between 1 and 30 random assets, and perform 20 simulations using the markowitz_function.
+        - We repeat the previous process 2 million times; getting a total of 40M portfolio simulations.
+        - To gain computational speed we will be using the multiprocessing library. 
+        - Finally, we run the code (it lasts around 23 hours) and we extract all the simulations data. 
+        - We plot the frontier and select the most efficient portfolio as the winner. 
+    
+5) Genetic Algorithm using markowitz:
+
+    A genetic algorithm is a search heuristic that is inspired by Charles Darwin's theory of natural evolution. This algorithm reflects the process of natural selection where the fittest individuals are selected for reproduction in order to produce offspring of the next generation.
+
+    - The Genetic Algorithm will be to solve the markowitz frontier with 70k investment funds. This problem-solving method will outperform (at least from a time-consumig perspective) the markowitz code we previously described. 
+
+    - The folder contains a  notebook and a pickle called 'fondos_limpios' that contains the cleaned and homogenized fund data. 
+
+    - constraints:
+        • Each 'individual' will be able to invest in  portfolios containing between 1 and 20 random assets. The number of assets in each portfolio will be modified for each generation, but cannot exceed from 20 assets. 
+
+    - Problem approach: 
+
+        • First We will need to determine the number of 'individuals' that will become part of the first generation and determine the number of future generations. We will be using 50 individuals and 50 future generations. The first generation will be created with individuals investing in random assets respecting the constraints previously stated. For each individual of the first generation, we will perform a mean_variance optimization of 100 random weights, and select the weights that represent the highest sharpe ratio. The reasoning behind using 100 random weights is because it will permit a better exploration of possible combinations. 
+
+        • Each individual of the first generation will be elegible to become 'moms and dads' of the future generation. 
+
+        • For the next generation, each 'son' will inherit the genetics (assets) of 'mom and dad'. The genetic mutation (generation of the inherited portfolio) will be performed according to the following rules: 
+            1) We concatenate mom and dad's assets and we eliminate duplicates. 
+            2) We generate a correlation matrix and select those assets that are below a correlation threshold. 
+            3) The son will inherit the uncorrelated assets and the asset with the highest sharpe ratio (that would be the 'best asset'/best gen inherited)
+            4) If all assets from mom and dad are uncorrelated and the portfolio sums <= 20 assets, the son will inherit all of them. On the other hand, if the genetic mutation has more than 20 assets, then we will order them based on sharpe ratio and select a random number between 10 and 20 assets, always respecting the sharpe order.
+            5) In addition to the genetic mutation, to favor asset exploration, if assets sum less than 16, then we will add between 1 and 4 random assets. This addition is necessary in order to avoid finding a local minima. 
+        
+        • For each individual of the next generation, we will perform a mean_variance optimization of 100 random weights, and select the weights that represent the highest sharpe ratio.
+
+    a) 'algoritmo_genetico.ipynb':
+        - This notebook contains the code with the genetic algorithm just described. 
+        - We will be using a class that will perform all the calculations for each generation and genetic mutation. 
+        - We then can analyze the results and get the best mean_variance portfolio. 
+        - It solves the markowitz problem using 70k funds in 38 seconds. 
+
+
+
+
+
+               
+
+
+
+
+
 
 
 
