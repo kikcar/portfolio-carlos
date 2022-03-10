@@ -1,0 +1,97 @@
+.container{
+    width: 100%;
+    font-family: "Segoe UI";
+    color: #2F5496;
+}
+
+.banner{
+    height: 100px;
+    background-color: white;
+    border-width: 10px;
+    border-style: outset;
+    border-radius: 20px;
+    border-color: #336699;
+}
+
+.espacio_alumnos{
+    height: 80px;
+    float: left;
+    width: 17%;
+    margin-top: 10px;
+    margin-left: 5px;
+    display: block;
+    background-color: white;
+}
+
+.alumno{
+    height: 30px;
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+    background-color: white;
+}
+
+.titulo_practica{
+    height: 80px;
+    float: left;
+    width: 70%;
+    margin-top: 10px;
+    text-align: center;
+    line-height: 80px;
+    font-size: 250%;
+    display: block;
+    background-color: white;
+}
+
+.espacio_logo{
+    height: 80px;
+    float: left;
+    width: 8%;
+    margin-top: 10px;
+    display: block;
+    background-color: white;
+}
+
+.espacio_pre_cuerpo{
+    height: 50px;
+}
+
+.cuerpo{
+    background-color: white;
+    height: 600px;
+}
+
+.espacio_grafico{
+    height: 600px;
+    width: 50%;
+    margin: auto;
+    background-color: white;
+}
+
+.titulo_grafico{
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 150%;
+    background-color: white;
+}
+
+.fecha_grafico{
+    padding-top: 20px;
+    background-color: white;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+.plot_grafico{
+    width: 100%;
+    height: 100%;
+}
+
+.pie_pagina{
+    height: 50px;
+    background-color: #203966;
+}

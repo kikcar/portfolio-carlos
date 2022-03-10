@@ -1,0 +1,6 @@
+pandas
+numpy
+requests
+datetime
+fsspec
+s3fs
