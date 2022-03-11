@@ -1,7 +1,8 @@
 ### Convultional and Recurrent Neural Networks
 
 Here we will be using Convultional Neuroal Networks using two famous datasets: Cifar100 and MNIST. 
-RNN + CNN playground folder contains different applications of CNN and RNN layers with financial data. There is no real objective in the codes, its just like a "playground". Be aware that some of the problems proposed doesn't make any financial sense. But it is useful to see how this kind of layers can be used with financial data. 
+
+The RNN + CNN playground folder contains different applications of CNN and RNN layers with financial data. There is no real objective in the codes, its just like a "playground". Be aware that some of the problems proposed doesn't make any financial sense. But it is useful to see how this kind of layers can be used with financial data. 
 
 a) Solving CIFAR100 ('solving_CIFAR100.ipynb'):
 
