@@ -371,7 +371,319 @@ These are the first lines of code I have ever typed in R, so please be aware of 
 
                     Finally, we will connect our github with google cloud. By doing so, we will be able to perform changes in our dash application and such changes will be immediately uploaded to the up and running dash web. 
 
-                       
+9) Machine Learning:
+
+    - This project is going to be a playground to use different machine learning techniques with supervised learning to solve a classification problem.
+
+    - The objective will be to construct a model that allows to recognize different technical analysis patterns within a price time series. Specifically we will be trying to detect double bottoms and double tops in candle charts.
+
+    - We will create three different models:
+
+        1) The first model will be a binary classification problem, and it will detect whether there is a double bottom or not. We will then analyze the results using a confusion matrix, a ROC curve, its AUROC result, and the accuracy. We will also plot the permutation importance of our features. 
+
+        2) The second model will be solving a multilabel classification problem, detecting double bottoms, double tops, and no pattern detected. To solve this problem we will be using three different ML techiniques, and then we will use the one with the best result based on accuracy estimated with cross validation. 
+
+        3) Finally, the third model will use a semi-supervised approach. We have to label our double tops and double bottoms manually, which is tedious and time-consuming. In order to improve this labelling process, we will design a cotraining algorithm that will do further labelling for us. Then we will compare the results with our original model. 
+
+    - Data: We will be using the data provided in 'datos_eurostoxx.csv' and 'benchmark_data.pkl'.
+
+    - Problem approach: 
+
+        1) Labelling our data:
+            • Since we are going to be using supervised learning, we will need to label our data in order to train our model. 
+            • We will do so ploting random 30-day-window candle charts from out benchmark price data. We will design the code to allow the user to give an input 0,1,2 according to the type of pattern the user considers its displayed (i.e, 0 = No pattern, 1 = Double bottom, 2 = Double top). 
+            • Once we have our patterns labelled, we will save the starting date of each 30-day window and its label to a data-frame; which we will be using to generate the data for our models.
+        
+        2) Feature Engineering:
+            • Once we have our window-data and labels, we have to think how are we going to transform our raw data into features that better represent the underlying problem, in this case to detect our price patterns. 
+            • The feature engineering process is kind of a creative process, so each user could think of different features. The ones we will be using are:
+                - Days between the max-close and low-close from the time-series window. 
+                - A binary feature that will represent which event happened first, the minimum (0) or the maximum (1) of the time series. 
+                - A local minimum detector that will help to find our double bottom (W). We will design a function that will evaluate the technical supports that exist within the window-data. We can think of it as a 'V' figure detector. In order to do so, we will use the low-data of the series and 5 daily candles. If the following conditions are met, then we will say a 'V' bottom exist: 
+                    a) If the low of the candle (X-1) is grater than or equal to the candle (X).
+                    b) If the low of the candle (X-2) is greater than or equal to the candle (X-1).
+                    c) If the low of the candle (X) is lower than or equal to the candle (X+1)
+                    d) If the low of the candle (X+1) is lower than or equal to the candle (X+2)
+                
+                If no bottom is find, then the function will return a 0. If different bottoms are to be found, we will establish a threshold based on the minimum data of the window-series + a percentage. If our bottom detected is above that threshold, then we will discard it, as it will mean that it is not a true bottom. 
+
+                - To detect double tops We will use the same techinque used above, but in the inverse order.
+                - We will use the previous bottoms and tops in order to detect a breakout of that double bottom or double top. We will use a binary label to establish whether a breakout has hapenned or not (1/0). 
+                - Number of positive days
+                - Number of negative days
+                - Return of the window
+                - Mean price-distance between the 30day rolling mean and the price data within the window. 
+        
+        3) Scaling of features:
+
+            • We will sclae our features so they all have the same mean and variance. 
+    
+        4) Train and test partitioning:
+
+            • We will divide our data into train and test, using 70% of our data to train our model and 30% to test it. 
+        
+    a) 'etiquetado.ipynb':
+
+        - This notebook will be used for the labelling process. 
+        - It will be displaying random 30-day windows and the user will do the manual labelling process. Each user will have a different opinion on what is a double top or double bottom. It is recommended to label as a pattern those candle charts that show a clear pattern; otherwise the model won't learn. 
+        - Finally it will save all our labels into three .csv files. 
+    
+    b) 'ML_MODELS.ipynb':
+
+        - This notebook will be used to create our models. It will be using all the data that the machine learning folder contains. 
+        - First we will upload the data and then display three examples, one of each label. 
+        - We will design a class function called 'generador_características', which will be generating our features given the data inputs. It will return a data-frame that will have:
+            • Each raw is an observation (30-day window).
+            • It will have as columns our features.
+            • The last column will be our labels, which we will separate later as y.
+            • The df will be shuffeled, so there will be a mix of target labels 1,2,0. 
+        - We will create a feature scaler function to scale our features in order to have the same mean and variance. We can check this condition is met by displaying the feature statistics.
+        
+        1) First Model: 
+
+            - We will generate our features which will have as labels either 1 or 0, being a double bottom or no pattern. 
+            - We perform a train-split function and split our data into x_train, x_test, y_train, y_test. 
+            - We will be using a random forest model imported from SKLEARN. The model will use 20 estimators and a stratifiedKfold of 4 splits. 
+            - In order to optimize our model we will also use a grid of parameters, and the GridSearchCV function will use all those parameters and select the ones that provide the greatest accuracy in cross validation. 
+            - We then train our model and use it on test data.
+            - We analyze our result metrics. 
+            - We do a permutation importance in order to plot the importance of our features.
+
+        2) Second Model:
+
+            - Here the process will be similar to the one followed in the first model. Recall that this time we are going to solve a multilabel problem using different ML techniques. In particular we will be using:
+                a) Ensembling (decisiont ree, Knn, and bayesian clasificator)
+                b) Random forest 
+                c) Bagging
+            
+            - We will create a class called 'ml_classificator' that will contain our models and will perform the different calculations for each model. The model with the greatest accuracy will be selected. All models will be optimized within the process. 
+
+            - We will then get the model results and analyze its metrics. 
+            - Finally, we will run our model with new eurostoxx data the model has never seen. We will see 5 examples of each label the model has detected and the confidence level the model is assiging to each classification. 
+        
+        3) Third Model:
+
+            - This model will be used to improve our labelling process using a cotraining algorithm with semi-supervisation. 
+            - We will use our first model as a classificator and we will split our features in two parts. For each new window, we will run the model two times, one with each set of characteristics. Those examples were the two results are the same target, will be labelled according to the prediction. 
+            - We then will add these new predictions to our original dataset, and used to re-train our model before a new set of windows are displayed to the model. 
+            - The objective is to increase our training dataset at the same time we are labelling new data. 
+        
+10) Dense Neural Networks
+
+    FIRST TIME USING DEEP LEARNING 
+
+    - This project will be used to solve regression and classification problems using dense neural networks. 
+    - The objective will be to use DNN layers, use different activation functions, and optimizing our models.
+    - The data used will be generated randomly. 
+    - We will be solving problems using keras and tensorflow.          
+
+    1) Solving a linear regression problem using Keras:
+        • We will use a Sequential model 
+        • We will establish a simple model with one layer and linear activation function
+        • Our loss function will be Mean Squared Error and we will be using a Stochastic Gradient Descent optimizer with a learning rate established at 0.0001.
+    
+    2) Solving a non-linear regression using keras:
+        • We will be using a sequential model with two layers.
+        • The first layer will be using 10 neutrons and a TANH activation function.
+        • Finally, the output layer will have a linear activation function.
+        • Our loss function will be Mean Squared Error and we will be using a Stochastic Gradient Descent optimizer with a learning rate established at 0.06.
+
+    3) Solving a 2-dimension logistic regression using keras:
+
+        • We will be using a sequential model with two layers.
+        • The first layer will be using 10 neutrons and a RELU activation function.
+        • Finally, the output layer will have a sigmoid (binary classification) activation function.
+        • Our loss function will be the binary_crossentropy and we will use the SGD optimizer with a learning rate of 0.04
+    
+    4) We will construct a more complex model:
+        • It will have an input layer with 54 neurons.
+        • Two layers with 256 and 32 neurons respectively, using sigmoid as an activation function and batch normalization. 
+        • An output layer with 7 neurons using a softmax.
+        • It will use Dropout with 0.2 in both layers.
+        • We will include both L1 and L2 regularizers. 
+        • We will initialize our weights using the Xavier method. 
+    
+    5) We will train our model to check it is working:
+      
+    6 and 7) We will solve regression problems using TensorFlow:
+        • Solving problems with tensorflow are a bit more complex than using keras, but it also allows more flexibility.
+    
+    8) Optimizing NN hiperparameters using Keras:
+        • We will use the keras model we created at 4) and we will optimize the hiperparameters used.
+        • In order to do the optimization we will use keras tunning. 
+        • The process requires to create a model_builder function that will have all the parameters we want to optimize.
+        • We will save all our optimization runs into log-files. 
+        • Finally we will select the model with the best loss results. 
+    
+    9) Optimizing NN hiperparameters using Tensorflow:
+        • The process is very similar to the one described in 8), but we will use tensorboard to display our results.
+
+    10) Solving a Kaggle problem - Tabular Playground Series - Jan 2022:
+
+        • The problem requires to predict the sales data for three stores.
+        • We will solve the problem using only DNN layers. 
+        • We need to do our feature engineering:
+             Given our available data is only the name of each store, dates, and sales. We will model our features by extracting the day, store, product, year, month, day, day-of-week, week-end, and quarter. All these can be extracted using pandas datetime. 
+        
+        • We will train our model based on such features.
+        • The model will be using keras and having as hiperparameters: 
+            1) Number of layers
+            2) Number of neurons in each layer
+            3) Regularization values
+            4) Acivation functions for the hidden layers
+            5) Different optimizers
+            6) Different Dropout values
+
+11) Convultional + Recurrent NN:
+
+    - Here we will be using Convultional Neuroal Networks using two famous datasets: Cifar100 and MNIST. 
+    - RNN + CNN playground folder contains different applications of CNN and RNN layers with financial data. There is no real objective in the codes, its just like a "playground". Be aware that some of the problems proposed doesn't make any financial sense. But it is useful to see how this kind of layers can be used with financial data. 
+
+    a) Solving CIFAR100 ('solving_CIFAR100.ipynb'):
+
+        - We are going to use 2D CNN to classify the cifar100 images. 
+        - First we will import the dataset from keras.datasets and perform a train and test split. We will convert our train and test data to categorical. 
+        - We will define a keras sequential model to solve our classification problem. We will be using:
+            • Our model input shape will be (32,32,3). 
+            • It will have 3 convultional 2D layers.
+            • Each layer will have a Relu activation function, L1 regularization, BatchNormalization, and Dropout. 
+            • We won't be using padding. 
+            • We will establish a kernel size of 3. 
+            • Finally, a flatten layer and an output softmax layer with 100 neurons (since que have 100 different classes). 
+        
+        - We will be using an Adam optimizer with a categorical_crossentropy loss function. 
+        - The training process will use 50 epochs, validation_split at 0.3, and early stopping. 
+        - Once we have our model trained, we evaluate the model. 
+    
+    b) Solving MNIST ('solving_MNIST.ipynb'):
+
+        - We are going to use 2D CNN to classify the MNIST number-images. 
+        - First we will import the dataset from keras.datasets and perform a train and test split. We will also convert our train and test data to categorical. 
+        - The main issue here is that we are using CNN 2D layers. When we analyze the MNIST data, we see that the dimentions don't match those required in a 2D CNN (n_samples, high, wide, channels)... the channel dimension is missing.
+        - To solve for the dimension problem, we will be using a reshape of our data and adding a channel dimension. This way we won't get a dimension error from keras. 
+        - We will define a keras sequential model to solve our classification problem. We will be using:
+            • Our input shape will be (28,28,1).
+            • We will use three conv2D layers, the first one will use padding. The activation functions will al be a RELU. 
+            • We will use Dropout, BatchNormalization, and MaxPooling2D. 
+            • We will establish a kernel size of 3. 
+            • Finally, a flatten layer and an aoutput with softmax activation and 10 neurons (we have to classify 10 numbers).
+        
+        - We will be using an Adam optimizer with a categorical_crossentropy loss function. 
+        - The training process will use 200 epochs
+        - Finally we evaluate the model and test it in our test data.
+
+    c) RNN + CNN PLAYGROUND:
+
+        As mentioneed above, this folder contains different applications of CNN and RNN layers with financial data. We are not going to preprocess any financial data, as the focus will be on coding RNN and CNN with financial data, so we might see unacceptable accuracies accross the codes. 
+
+        1) 'ejercicio_uno.ipynb': 
+
+            - Objective: Defining models with correct layers and dimensions.
+            - This code will be modelling three models that need to solve the following problems: 
+
+                a) Design a classification model where we have 5000 images with dimensions 28x28, for every object we will have 20 possible labels:
+
+                    - The proposed model will use convultional neural networks. 
+                    - Since the dimensions are 28x28 and we are going to use 2DCNN, a third channel dimension needs to be added. Therefore, the input shape of our model will be (28,28,1).
+                    - We will use two convultional layers with dropout and padding valid.
+                    - The activation functions will be a RELU for the two CNN layers and a kernel size of 3. 
+                    - Finally, a flatten layer and a 20 neurons output layer using a softmax function. 
+                    - The model will be compiled using a SGD optimizer with a 0.0001 learning rate.
+                    - The loss function used will be a categorical_crossentropy.
+                
+                b) We have the following price data from an asset: 50k observations of 11 days each observation. Design a model that has as input the first 10 days of each observation and needs to predict the 11th. Requirements: Use at least 2 LSTM layers, a GRU layer, and a Dense layer:
+
+                    - THe proposed model will be using Recurrent neural networks. The reasoning behind using such RNN is because our data is sequential... the 11th price will be based on the evolution of the previous 10 days. 
+                    - We will first use two LSTM layers with a RELU activation function. 
+                    - The input shape of the first layer will be (50.000,10)
+                    - We will use the return_sequences TRUE parameter from the LSTM layers. 
+                    - We will then add the GRU layer with return sequences FALSE and a RELU activation function. 
+                    - Finally, and output dense layer with 50000 neurons and a linear activation function. 
+                    - The loss function used will be MSE and a SGD optimizer. 
+                
+                c) We have the following price data from 10 assets: 50k observations with 7 days of price data for each observation for each asset. Therefore, the dimensions of our data are (5000,7,10). The idea is to predict the 8th day of an 11th asset based on the data of the other 10 assets:
+
+                    -The proposed model would be using a combination of RNN + CNN + DNN. 
+                    - We would first model a LSTM layer with a relu activation function, return sequences true, and an input shape of (7,10). 
+                    - For the CNN layers, since we are working with financial data, we don't need the "channel" dimension we had with 2D CNN layers. Therefore, we will use 1D CNN layers, which make more sense. 
+                    - We create two CONV1D layers with a kernel size of 3, padding 'same', and a relu activation function.
+                    - Finally we use a Flatten layer and a dense linear function. 
+                    - The loss function used will be MSE and a SGD optimizer. 
+        
+        2) 'ejercicio_dos.ipynb':
+            - Objective: Train a model using keras with CNN to predict the daily close data of Apple. We will be using the data provided in the folder. The idea is to use the previous 4 days to predict the 5th close price. We will then compare it to a simple linear model. 
+
+                - data preparation:
+                    • We will upload the data and extract the open and close values from apple. 
+                    • We will then use a 5 time step and create a df with n_observations and 5 daily price data.
+                    • We split our data into train and test, being the 5th day our target data.
+
+                - Model Design: 
+                    • We will use two conv1D layers with kernel size 3, input shape (4,1), relu activation and padding 'same'.
+                    • Finally we use a flatten layer and a dense linear activation.
+                    • The loss function used will be MAE and an Adam optimizer.
+
+                Finally we compare the model results to a linear model. 
+
+        3) 'ejercicio_tres.ipynb': 
+            - Objective: Solve the same problem as in the second exercise, but this time combining CNN and RNN. 
+
+            - data preparation: Same as the one we used earlier.               
+            - Model Design:
+                • We will use first a GRU layer (RNN) with a relu activation function and return sequences True.
+                • Return sequences needs to be True in order to use a CONV1D as the next layer. Otherwise we would get a dimension error from keras. 
+                • We then use a CONV1D layer with kernel size 3, a relu activation function, an l2 regularizer and padding 'same'. 
+                • Finally we use a flatten layer and a dense linear activation.
+                • The loss function used will be MAE and an Adam optimizer.
+
+                Finally we compare the model results to a linear model.
+        
+        4) 'ejercicio_cuatro.ipynb': 
+            - Objective: Design a model using keras combining CNN + RNN + Dense layers to predict the daily close data of Apple. We will be using the data of Amazon, Microsoft, Meta (facebook), Google, and Apple from the previous 4 days to predict a 5th day for each observation. 
+
+            - Data Preparation:
+                • We will upload the data and extract the open and close values from each company. 
+                • We will then use a 5 time step and create a df with n_observations and 5 daily price data.
+                • We split our data into train and test, being the 5th day our target data.
+                • We will get the following data dimensions (n_observations, 5, 5).
+            
+            - Model Design:
+                • All activation functions will be RELU except the last one. 
+                • We will use first a LSTM layer with an input shape of (4,5) and return sequences True. 
+                • We add a GRU layer with return sequences True.
+                • We add a CONV1D layer with kernel dize 3, l2 regularizer, and padding 'same'. 
+                • Batchnormalization
+                • We repeat the above layers again.
+                • Finally we use a flatten layer and a dense linear activation.
+                • The loss function used will be MAE and an Adam optimizer.
+
+                We compare the model results to a linear model.
+
+        5) 'ejercicio_cinco.ipynb': 
+            - Objective: Use the previous model but with conv2D layers. 
+            - The problem is solved creating a channel dimension so the conv2D work and we don't get a dimensional error.
+        
+        6) 'ejercicio_seis.ipynb':
+
+            BE AWARE THIS PROBLEM DOESN'T MAKE ANY FINANCIAL SENSE. 
+
+            - Objective: Predict the closing Apple price data using plots from the apple price evolution. 
+            - Data Preparation:
+                • We will prepare the data using the same process as the one described in 2).
+                • Once we have our data-set prepared, we need to plot the data in a grey-sclae and save each plot into a list.
+                • Each plot will have the following dimension (144,144,1) 
+            
+            - Model Design:
+                • We will be using conv2D layers, Dropout, and Maxpooling2D.
+                • Finally we use a flatten layer and a dense linear activation.
+               
+
+
+
+
+
+
+
 
                 
 
