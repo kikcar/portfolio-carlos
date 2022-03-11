@@ -17,16 +17,20 @@ We will create three different models:
 - Problem approach: 
 
     1) Labelling our data:
+
         • Since we are going to be using supervised learning, we will need to label our data in order to train our model. 
         • We will do so ploting random 30-day-window candle charts from out benchmark price data. We will design the code to allow the user to give an input 0,1,2 according to the type of pattern the user considers its displayed (i.e, 0 = No pattern, 1 = Double bottom, 2 = Double top). 
         • Once we have our patterns labelled, we will save the starting date of each 30-day window and its label to a data-frame; which we will be using to generate the data for our models.
     
     2) Feature Engineering:
+
         • Once we have our window-data and labels, we have to think how are we going to transform our raw data into features that better represent the underlying problem, in this case to detect our price patterns. 
         • The feature engineering process is kind of a creative process, so each user could think of different features. The ones we will be using are:
+        
             - Days between the max-close and low-close from the time-series window. 
             - A binary feature that will represent which event happened first, the minimum (0) or the maximum (1) of the time series. 
             - A local minimum detector that will help to find our double bottom (W). We will design a function that will evaluate the technical supports that exist within the window-data. We can think of it as a 'V' figure detector. In order to do so, we will use the low-data of the series and 5 daily candles. If the following conditions are met, then we will say a 'V' bottom exist: 
+
                 a) If the low of the candle (X-1) is grater than or equal to the candle (X).
                 b) If the low of the candle (X-2) is greater than or equal to the candle (X-1).
                 c) If the low of the candle (X) is lower than or equal to the candle (X+1)

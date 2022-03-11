@@ -1,4 +1,4 @@
-###  Solving the Markowitx frontier using 70k investment funds
+###  Solving the Markowitz frontier using 70k investment funds
 
  The objective of this project is to solve the markowitz frontier with 70k funds and get a code capable of solving it under 24h of execution. We won't be using any AI, ML, nor optimization techniques. 
 
