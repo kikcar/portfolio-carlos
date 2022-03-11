@@ -1,4 +1,4 @@
-1) My first projects with R:
+###  My first projects with R
 
 These are the first lines of code I have ever typed in R, so please be aware of potential rookie mistakes and lack of clearness. 
 
