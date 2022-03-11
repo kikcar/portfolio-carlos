@@ -2,8 +2,6 @@
 
 These are the first lines of code I have ever typed in R, so please be aware of potential rookie mistakes and lack of clearness. 
 
-- The folder contains the data being used in a '.csv' format. 
-
     a) 'solving_the_titanic.R':
 
         - This piece of code uses the data from 'train.csv' to solve basic data problems, with a focus on basic data exploration, cleaning, and extraction.
