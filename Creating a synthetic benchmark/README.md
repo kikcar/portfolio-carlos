@@ -2,32 +2,32 @@
 
  "Any Monkey Can Beat The Market -  Give a monkey enough darts and they'll beat the market"
 
-    This project pretends to code a benchmark following the famous premise stated above. We're going to create a synthetic benchmark based on monkeys that invest in the market. This problem is usually solved following the "blindfolded monkey" approach, where each simulation represents a blindfolded monkey throwing darts (selecting portfolios).
+This project pretends to code a benchmark following the famous premise stated above. We're going to create a synthetic benchmark based on monkeys that invest in the market. This problem is usually solved following the "blindfolded monkey" approach, where each simulation represents a blindfolded monkey throwing darts (selecting portfolios).
 
-    However, using only blindfolded monkeys doesn't seem to be a fair... therefore, we will be also using monkeys with habilities. Such habilities will be either Jensen's Alpha, Sharpe Ratio, or Markowitz frontier. 
+However, using only blindfolded monkeys doesn't seem to be a fair... therefore, we will be also using monkeys with habilities. Such habilities will be either Jensen's Alpha, Sharpe Ratio, or Markowitz frontier. 
 
-    We will be using investment funds NAV data contained in the zipped files 'navs' which contain a pickle file, and 'maestro.csv'.
+We will be using investment funds NAV data contained in the zipped files 'navs' which contain a pickle file, and 'maestro.csv'.
 
-    - Reasoning behind this project.
+- Reasoning behind this project.
 
-        • This project is very usefull when designing algorithms. It is very easy to do a wrong backtesting and getting misleading results. If you perform a synthetic benchmark using the monkey it can be used as an indicator to check whether your results are valid or not. The ending point is that you will never be able to beat the monkey that beats the market, if you beat him... there's something you're doing wrong. 
+    • This project is very usefull when designing algorithms. It is very easy to do a wrong backtesting and getting misleading results. If you perform a synthetic benchmark using the monkey it can be used as an indicator to check whether your results are valid or not. The ending point is that you will never be able to beat the monkey that beats the market, if you beat him... there's something you're doing wrong. 
 
-    - Constraints:
+- Constraints:
 
-        • Each monkey will be able to reinvest their money to compound returns.
-        • Each portfolio will contain between 2 and 30 assets. 
-        
-    - Problem approach:
-        
-        • We will be using the same data preparation and cleaning approach followed in the Markowitz problem. Reutilizing the same functions.
-        • A number of 17k funds will remain, so we will perform 100 million simulations (monkeys) in order to do enough exploration. The code will have an execution time under 24h.
-        • For each monkey, we will assign an hability:
-            - Random investment: The monkey will be blindfolded and invest in N assets (respecting the limit).
-            - Markowitz frontier approach: The monkey will have the hability to perform a markowitz frontier given a 250 days window. 
-            - Sharpe Ratio approach: The monkey will have the hability to select random assets that have a positive sharpe ratio above a pre-specified threshold, which will also be determined randomly. 
-            - Jensen's Alpha approach: The monkey will have the hability to select random assets that have a positive jensen's alpha in relation with the MSCI World benchmark.
-        • Both sharpe ratio and jensen's alpha will be calculated following random windows between 15-60 days taking a 5 day-step. Therefore, for each monkey having such habilities, will be able to use either a 15,20,30,35...60 window.  
-        • Finally, we will establish a random threshold between 1% and 20% return for each monkey. If the return obtained by a monkey is above that threshold, the monkey will be able to reinvest its money. 
+    • Each monkey will be able to reinvest their money to compound returns.
+    • Each portfolio will contain between 2 and 30 assets. 
+    
+- Problem approach:
+    
+    • We will be using the same data preparation and cleaning approach followed in the Markowitz problem. Reutilizing the same functions.
+    • A number of 17k funds will remain, so we will perform 100 million simulations (monkeys) in order to do enough exploration. The code will have an execution time under 24h.
+    • For each monkey, we will assign an hability:
+        - Random investment: The monkey will be blindfolded and invest in N assets (respecting the limit).
+        - Markowitz frontier approach: The monkey will have the hability to perform a markowitz frontier given a 250 days window. 
+        - Sharpe Ratio approach: The monkey will have the hability to select random assets that have a positive sharpe ratio above a pre-specified threshold, which will also be determined randomly. 
+        - Jensen's Alpha approach: The monkey will have the hability to select random assets that have a positive jensen's alpha in relation with the MSCI World benchmark.
+    • Both sharpe ratio and jensen's alpha will be calculated following random windows between 15-60 days taking a 5 day-step. Therefore, for each monkey having such habilities, will be able to use either a 15,20,30,35...60 window.  
+    • Finally, we will establish a random threshold between 1% and 20% return for each monkey. If the return obtained by a monkey is above that threshold, the monkey will be able to reinvest its money. 
 
     a) 'funciones_monos.py'    
 
