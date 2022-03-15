@@ -19,12 +19,15 @@ We will create three different models:
     1) Labelling our data:
 
         • Since we are going to be using supervised learning, we will need to label our data in order to train our model. 
+
         • We will do so ploting random 30-day-window candle charts from out benchmark price data. We will design the code to allow the user to give an input 0,1,2 according to the type of pattern the user considers its displayed (i.e, 0 = No pattern, 1 = Double bottom, 2 = Double top). 
+
         • Once we have our patterns labelled, we will save the starting date of each 30-day window and its label to a data-frame; which we will be using to generate the data for our models.
     
     2) Feature Engineering:
 
         • Once we have our window-data and labels, we have to think how are we going to transform our raw data into features that better represent the underlying problem, in this case to detect our price patterns. 
+        
         • The feature engineering process is kind of a creative process, so each user could think of different features. The ones we will be using are:
         
             - Days between the max-close and low-close from the time-series window. 

@@ -4,7 +4,7 @@ Welcome to my portfolio, here you'll find all the projects I've been working on 
 
 - Portfolio index:
     
-        1 - My first projects in R --> Here the first projects I ever developed in R can be found. 
+        1 - My first projects in R --> The first projects I ever developed in R. 
 
         2 -  My first projects in Python --> Applying financial concepts with python.  
 
@@ -14,7 +14,7 @@ Welcome to my portfolio, here you'll find all the projects I've been working on 
 
         5 -  Genetic Algorithm using markowitz --> Solving the markowitz frontier using a Genetic Algorithm.
 
-        6 -  Creating a synthetic benchmark --> Creating a synhtetic benchmark based on the "Any Monkey Can Beat The Market" theory.
+        6 -  Creating a synthetic benchmark --> Creating a synthetic benchmark based on the "Any Monkey Can Beat The Market" theory.
 
         7 -  Portfolio Optimiazation --> Optimizing portfolio strategies using CVXPY. 
 
@@ -34,7 +34,7 @@ Welcome to my portfolio, here you'll find all the projects I've been working on 
 
 - Currently developing three projects involving (ETA 3-5 weeks):
 
-        a) Natural Lenguage Processing.
+        a) Natural Language Processing.
 
         b) Generative Adversarial Networks.
 

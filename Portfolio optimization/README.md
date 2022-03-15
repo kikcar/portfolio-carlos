@@ -15,9 +15,13 @@ The project is going to be based on portfolio optimization using different strat
 - Data: We will be using the data contained in 'filtro_sp.csv', 'SP500.xlsx', 'SX5E.csv', 'precios_activos_unicos.xlsx', 'dataset_inputs.csv'. 
 
 - Constraints:
+
     • The SP500 needs to be net of survivorship bias. 
-    • Each portfolio strategy must have between 2 and 30 assets. 
+
+    • Each portfolio strategy must have between 2 and 30 assets.
+
     • Long only portfolios.
+
     • Each portfolio must respect the UCITS regulation that applies in Europe. Which means that the following weight constraints must be met:
         - A single asset can't weight more than 10% of the portfolio.
         - Those assets with weights above 5% can't add up to 40% weight in the portfolio. 
@@ -25,19 +29,29 @@ The project is going to be based on portfolio optimization using different strat
 - Problem approach:
 
     1) Solving the survivorship bias problem:
-        • We need to get our SP500 data clean of survivorship bias. In order to accomplish this constraint, we will use the SP500 composition for the last 5 years in order to create a dataframe with all the companies that have formed part of the index within that time. 
-        • Once we get all unique companies, we will create a data-frame which will be considered a filter. This filter will have the same dates as our daily sp500 data and each column will be a unique company. 
-        • We will fill the filtering data-frame with 1 and 0 for each date for each company based on the company being part or not of the sp500 index.
-        • Finally, we will multiply our filtering df with 1 and 0 by our original daily sp500 data. Therefore, we will get the actual daily prices for each date for each company that was part of the index for that date. 
 
+        • We need to get our SP500 data clean of survivorship bias. In order to accomplish this constraint, we will use the SP500 composition for the last 5 years in order to create a dataframe with all the companies that have formed part of the index within that time. 
+
+        • Once we get all unique companies, we will create a data-frame which will be considered a filter. This filter will have the same dates as our daily sp500 data and each column will be a unique company. 
+
+        • We will fill the filtering data-frame with 1 and 0 for each date for each company based on the company being part or not of the sp500 index.
+
+        • Finally, we will multiply our filtering df with 1 and 0 by our original daily sp500 data. Therefore, we will get the actual daily prices for each date for each company that was part of the index for that date. 
+        
     3) Calculating betas:
+
         • Since we won't be using fundamental data from each company to construct our quality, growth, value, and market portfolios, we will be using the data from the SP500 style indexes. 
+
         • For each style index, we will calculate the betas of each stock to that index.
+
         • The stocks with the 50 highest betas to each index will be considered for each portfolio style.  
 
     2) Optimizing the strategies:
+
         • First of all, we will be using the XPRESS solver that needs to be installed along the CVXPY library.
+
         • For each date, and for each strategy we will generate a function that returns a covariance matrix and the betas/return of each strategy depending on which strategy we are working on. 
+        
         • Once we have the covariance and betas/returns of each date for each strategy, we will compute the daily variance optimization. Therefore, we will get daily weights for each strategy that maximize the return/betas and minimizes portfolio volatility. 
 
     a) 'data_strategies.py':
