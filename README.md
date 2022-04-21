@@ -37,8 +37,10 @@ Welcome to my portfolio, here you'll find all the projects I've been working on 
         a) Natural Language Processing.
 
         b) Generative Adversarial Networks.
+        
+        c) Reinforcement Learning
 
-        c) Master's thesis involving a trading algorithm using deep learning and portfolio optimization techniques. (ETA June 2022)
+        d) Master's thesis involving a trading algorithm using deep learning and portfolio optimization techniques. (ETA June 2022)
 
     
     
